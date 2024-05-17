@@ -40,11 +40,7 @@ def raspaAtributos():
 
     print("Raspando atributos...")
 
-    print("Raspando links...")
-    url= "https://www.usadosbr.com/carros/br/honda"
-    pagina = requests.get(url)
-    time.sleep(1)
-    soup = BeautifulSoup(pagina.text, 'html.parser')
+    
 
     for link in links:
 
@@ -74,15 +70,42 @@ def raspaAtributos():
                 continue
 
         del atributes[1]
+        atributes.append(" ")
         carList.append(atributes)
         print("Item raspado.")
         
     return carList
 
-#def formataAtributos
-matriz = raspaAtributos()
-for i in range(10):
-    matriz[i][5] = prices[i]
-for l in matriz:
-    print(l)
+def formataAtributos():
+    matriz = raspaAtributos()
+    for i in range(10):
+        matriz[i][6] = prices[i]
 
+    for i in range(10):
+        genericVar = matriz[i][0].split(" ")
+        matriz[i][0] = genericVar[1]
+
+        genericVar = matriz[i][1].split("/")
+        matriz[i][1] = genericVar[0]
+
+        genericVar = matriz[i][2]
+        if genericVar in {'CVT', 'Automático'}:
+            matriz[i][2] = True
+        else:
+            matriz[i][2] = False
+
+        genericVar = matriz[i][5].split(" ")
+        matriz[i][5] = genericVar[0]
+
+        genericVar = re.sub(r'[^0-9]', '', matriz[i][6])
+        matriz[i][6] = genericVar
+
+    return matriz
+
+def main():
+    matriz = formataAtributos()
+
+    for l in matriz:
+        print(l)
+
+main()
